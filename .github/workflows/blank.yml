@@ -21,13 +21,13 @@ jobs:
         with:
           script: |
             var types = [];
-            if (github.event.inputs.a) {
+            if (context.payload.inputs.a) {
               types.push('a')
             }
-            if (github.event.inputs.b) {
+            if (context.payload.inputs.b) {
               types.push('b')
             }
-            var versions = fromJSON(github.event.inputs.v)
+            var versions = fromJSON(context.payload.inputs.v)
             
             var result = []
             for (t in types) {
