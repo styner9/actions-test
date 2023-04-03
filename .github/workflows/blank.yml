@@ -27,7 +27,7 @@ jobs:
             if (${{ github.event.inputs.b }}) {
               types.push('b')
             }
-            var versions = fromJSON(${{ github.event.inputs.v }})
+            var versions = ${{ fromJSON(github.event.inputs.v) }}
             
             var result = []
             for (t in types) {
