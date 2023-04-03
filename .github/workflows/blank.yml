@@ -3,20 +3,39 @@ name: test
 on:
   workflow_dispatch:
     inputs:
-      products:
-        description: "List of Products"
-        default: '["yellow", "red"]'
-      limits:
-        description: "List of limits"
-        default: '[50, 100]'
-
+      a:
+        type: boolean
+      b:
+        type: boolean
+      v:
+        type: string
+        default: '[1, 2]'
 jobs:
-  build:
+  matrix_maker:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        product: ${{ fromJSON(github.event.inputs.products)}}
-        limits: ${{ fromJSON(github.event.inputs.limits) }}
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.result }}
     steps:
-      - run: echo "${{ matrix.product }} / ${{ matrix.limits }}"
+      - uses: actions/github-script@v6
+        id: set-matrix
+        with:
+          script: |
+            var types = [];
+            if (github.event.inputs.a) {
+              types.push('a')
+            }
+            if (github.event.inputs.b) {
+              types.push('b')
+            }
+            var versions = fromJSON(github.event.inputs.v)
+            
+            var result = []
+            for (t in types) {
+              for (v in versions) {
+                result.push(t + "-" + v)
+              }
+            }
+            return result
 
+      - name: Debug output
+        run: echo "${{ steps.set-matrix.outputs.result }}"
